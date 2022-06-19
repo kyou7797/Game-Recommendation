@@ -1,12 +1,8 @@
-from tkinter import Button
-from click import option
 import streamlit as st
 import pandas as pd
 import random
-import math
-import os.path
 import numpy as np
-from traitlets import default
+
 
 similiar = pd.read_csv('./Sim_game.csv')
 
