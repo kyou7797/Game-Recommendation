@@ -86,10 +86,14 @@ def predict():
   keep = keep[['Name', 'Val']]
   gn = list(ch['user_id'].unique())
   gn.remove('New player GG123')
+  
   for i in gn:
-    keep.loc[keep.shape[0]] = [i,distance.euclidean(encoded_df[encoded_df.index == 'New player GG123'], encoded_df[encoded_df.index == i])]
-
+    point1 = np.array(encoded_df[encoded_df.index == 'New player GG123'])
+    point2 = np.array(encoded_df[encoded_df.index == i])
+    keep.loc[keep.shape[0]] = [i,np.linalg.norm(point1 - point2)]
+    
   similar = keep.sort_values(by ='Val', ascending = True).reset_index(drop =True).loc[0]['Name']
+  
   ans_name = []
   
   for i in ansAll[ansAll['user_id'] == similar]['item_id'].unique():
