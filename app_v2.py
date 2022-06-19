@@ -1,3 +1,4 @@
+from tkinter import Button
 from click import option
 import streamlit as st
 import pandas as pd
@@ -33,6 +34,7 @@ if 'predict' not in st.session_state:
 def collect_game():
   res = st.multiselect("Choose your favorite game ", (st.session_state['games']))
 
+  st.write("* You have to select more than 5 games to go next")
   Select = st.button("Select")
   if Select:
     st.session_state['ans'] = res
@@ -40,9 +42,10 @@ def collect_game():
 
   st.write("Similiar")
   st.write(st.session_state['suggest'])
-  if len(st.session_state['ans']) >0:
+  if len(st.session_state['ans']) >=1:
     Next = st.button("Next")
     if Next: 
+      st.write("Press again")
       st.session_state['ans'] = res
       st.session_state['next'] = Next
     
@@ -56,6 +59,7 @@ def collect_time():
       
     submitted = st.form_submit_button("Submit")
     if submitted:
+      st.write("Press again")
       st.session_state['time'] = time
       df = pd.read_csv("./Name_id.csv")
       for i in range(len(st.session_state['ans'])):
@@ -100,6 +104,15 @@ def predict():
     ans_name.append(name[name['item_id'] == i]['item_name'].unique()[0])
     
   st.write(ans_name)
+  Again = st.button("Again")
+  if Again:
+    st.write("Press again")
+    st.session_state['predict'] = False
+    st.session_state['ans'] = []
+    st.session_state['time'] = []
+    st.session_state['next'] = False
+    st.session_state['suggest'] = pd.DataFrame()
+    
     
 if st.session_state['predict'] == False:
   if st.session_state['next'] == False:
