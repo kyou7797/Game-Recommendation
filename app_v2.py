@@ -5,7 +5,6 @@ import random
 import math
 import os.path
 import numpy as np
-from scipy.spatial import distance
 from traitlets import default
 
 similiar = pd.read_csv('./Sim_game.csv')
