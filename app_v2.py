@@ -44,6 +44,7 @@ def collect_game():
   if len(st.session_state['ans']) >0:
     Next = st.button("Next")
     if Next: 
+      st.session_state['ans'] = res
       st.session_state['next'] = Next
     
 def collect_time():
