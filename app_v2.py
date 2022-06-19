@@ -66,38 +66,36 @@ def predict():
   df_1 = pd.read_csv("./Df_1.csv")
   df_2 = pd.read_csv("./Df_2.csv")
   df = pd.concat([df_1, df_2])
+  name = pd.read_csv("./Name_id.csv")
   ansAll = pd.read_csv('./ans0_51135.csv', index_col=0)
         
-  # new = pd.DataFrame()
-  # new['user_id'] = 'New player GG123'
-  # new['item_id'] = st.session_state['ans']
-  # new['playtime_scaled'] = st.session_state['time']
-  # new['user_id'] = 'New player" GG123'
+  new = pd.DataFrame()
+  new['user_id'] = 'New player GG123'
+  new['item_id'] = st.session_state['ans']
+  new['playtime_scaled'] = st.session_state['time']
+  new['user_id'] = 'New player GG123'
   
-  st.write(st.session_state['ans'])
-  st.write(st.session_state['time'])
+  ch = new
   
-
-  # keep = pd.DataFrame(columns=['A', 'B'])
-  # ch = pd.DataFrame()
-
-  # for i in range(new.shape[0]):
-  #     table.loc['New player GG123',new.iloc[i]['item_id']] = new.iloc[i]['playtime_scaled']
-  #     ch = pd.concat([ch, df[df['item_id'] == new.iloc[i]['item_id']]])
-  # table = table.fillna(0)
-
-  # for i in ch['user_id'].unique():
-  #   if (table[table.index == i].empty == False):
-  #     keep.loc[keep.shape[0]] = [i,distance.euclidean(table[table.index == 'New player GG123'], table[table.index == i])]
-
-  # similiar_user = keep.sort_values(by ='B', ascending = False).iloc[0]['A']
+  for i in range(new.shape[0]):
+    ch = pd.concat([ch, df[df['item_id'] == new.iloc[i]['item_id']]])
     
-  # ans_name = []
-  
-  # for i in ansAll[ansAll['user_id'] == similiar_user]['item_id'].unique():
-  #   ans_name.append(df[df['item_id'] == i]['item_name'].unique()[0])
+  encoded_df=ch.groupby(['user_id','item_id'])['playtime_scaled'].sum().unstack().reset_index().fillna(0).set_index('user_id')
     
-  # st.write(ans_name)
+  keep = pd.DataFrame(columns = {'Name', 'Val'})
+  keep = keep[['Name', 'Val']]
+  gn = list(ch['user_id'].unique())
+  gn.remove('New player GG123')
+  for i in gn:
+    keep.loc[keep.shape[0]] = [i,distance.euclidean(encoded_df[encoded_df.index == 'New player GG123'], encoded_df[encoded_df.index == i])]
+
+  similar = keep.sort_values(by ='Val', ascending = True).reset_index(drop =True).loc[0]['Name']
+  ans_name = []
+  
+  for i in ansAll[ansAll['user_id'] == similar]['item_id'].unique():
+    ans_name.append(name[name['item_id'] == i]['item_name'].unique()[0])
+    
+  st.write(ans_name)
     
 if st.session_state['predict'] == False:
   if st.session_state['next'] == False:
