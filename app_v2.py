@@ -38,7 +38,7 @@ def collect_game():
 
   st.write("Similiar")
   st.write(st.session_state['suggest'])
-  if len(st.session_state['ans']) >=1:
+  if len(st.session_state['ans']) >=5:
     Next = st.button("Next")
     if Next: 
       st.write("Press again")
