@@ -29,13 +29,13 @@ if 'predict' not in st.session_state:
 
 def collect_game():
   res = st.multiselect("Choose your favorite game ", (st.session_state['games']))
-
   st.write("* You have to select more than 5 games to go next")
   st.write("* Select button will help to suggest similiar games that you chose")
   Select = st.button("Select")
   if Select:
-    st.session_state['ans'] = res
-    st.session_state['suggest'] = similiar[similiar['Ori_game'] == st.session_state['ans'][-1]]['Name']
+    if res != []:
+      st.session_state['ans'] = res
+      st.session_state['suggest'] = similiar[similiar['Ori_game'] == st.session_state['ans'][-1]]['Name']
 
   st.write("Similiar")
   st.write(st.session_state['suggest'])
