@@ -67,7 +67,7 @@ def predict():
   df_2 = pd.read_csv("./Df_2.csv")
   df = pd.concat([df_1, df_2])
   name = pd.read_csv("./Name_id.csv")
-  ansAll = pd.read_csv('./ans0_51135.csv', index_col=0)
+  ansAll = pd.read_csv('./ans30Complete.csv', index_col=0)
         
   new = pd.DataFrame()
   new['user_id'] = 'New player GG123'
@@ -97,7 +97,8 @@ def predict():
   ans_name = []
   
   for i in ansAll[ansAll['user_id'] == similar]['item_id'].unique():
-    ans_name.append(name[name['item_id'] == i]['item_name'].unique()[0])
+    if i not in st.session_state['ans']:
+      ans_name.append(name[name['item_id'] == i]['item_name'].unique()[0])
     
   st.write(ans_name)
   Again = st.button("Again")
