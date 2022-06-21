@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import random
+import math
 import numpy as np
 
 
@@ -31,6 +31,7 @@ def collect_game():
   res = st.multiselect("Choose your favorite game ", (st.session_state['games']))
 
   st.write("* You have to select more than 5 games to go next")
+  st.write("* Select button will help to suggest similiar games that you chose")
   Select = st.button("Select")
   if Select:
     st.session_state['ans'] = res
@@ -48,18 +49,22 @@ def collect_game():
 def collect_time():
   with st.form("my_form"):
     time = [None] * len(st.session_state['ans'])
+    Id = []
+    df = pd.read_csv("./Name_id.csv")
+    scale = pd.read_csv('Scale.csv', index_col= 0)
+    for i in range(len(st.session_state['ans'])):
+      Id.append(df[df['item_name'] == st.session_state['ans'][i]]['item_id'].unique()[0])
     for i in range(len(st.session_state['ans'])):
       st.write(st.session_state['ans'][i])
-      time[i] = st.slider("How much time you use to play in scores", max_value = 10.0, value = 5.0, step = 0.5, key = i)
-      time[i] = random.uniform(time[i] -0.5, time[i] +0.5)
+      time[i] = st.slider("How much time you use to play ? ( Hrs. )", max_value = math.floor(scale.loc['Max_scaled', str(Id[i])]), value = 1, step = 1, key = i)
       
     submitted = st.form_submit_button("Submit")
     if submitted:
       st.write("Press again")
-      st.session_state['time'] = time
-      df = pd.read_csv("./Name_id.csv")
       for i in range(len(st.session_state['ans'])):
         st.session_state['ans'][i] = df[df['item_name'] == st.session_state['ans'][i]]['item_id'].unique()[0]
+        time[i] = (time[i] - scale.loc['Mean', str(st.session_state['ans'][i])]) / (scale.loc['Max_scaled', str(st.session_state['ans'][i])] - scale.loc['Min_scaled', str(st.session_state['ans'][i])]) + abs(scale.loc['Less_Value', str(st.session_state['ans'][i])])
+        st.session_state['time'].append(time[i] * 10)
       st.session_state['predict'] = True
 
 def predict():
